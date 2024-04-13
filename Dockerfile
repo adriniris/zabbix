@@ -1,6 +1,6 @@
 FROM ubuntu:latest
-RUN apt update && apt upgrade
-RUN apt install vim wget
+RUN apt update && apt upgrade -y
+RUN apt install wget mariadb-server -y
 RUN wget https://repo.zabbix.com/zabbix/6.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.4-1+ubuntu22.04_all.deb
 RUN dpkg -i zabbix-release_6.4-1+ubuntu22.04_all.deb
 
@@ -8,7 +8,7 @@ RUN dpkg -i zabbix-release_6.4-1+ubuntu22.04_all.deb
 RUN apt update
 
 # Instalamos los paquetes nginx, mysql y los de zabbix, que instala el PHP
-RUN apt install zabbix-server-mysql zabbix-frontend-php zabbix-nginx-conf zabbix-sql-scripts zabbix-agent
+RUN DEBIAN_FRONTEND=noninteractive apt install zabbix-server-mysql zabbix-frontend-php zabbix-nginx-conf zabbix-sql-scripts zabbix-agent -y
 
 # Copiamos el script de configuración de MariaDB, Zabbix y el entrypoint
 COPY conf-zabbix.sh /usr/local/bin/conf-zabbix.sh
