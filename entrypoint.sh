@@ -10,3 +10,6 @@ for servicio in "${servicios[@]}"; do
 done
 
 echo "Todos los servicios han sido iniciados"
+
+# Bucle para mantener el contenedor abierto
+yes wecan

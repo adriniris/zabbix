@@ -10,11 +10,19 @@ RUN apt update
 # Instalamos los paquetes nginx, mysql y los de zabbix, que instala el PHP
 RUN apt install zabbix-server-mysql zabbix-frontend-php zabbix-nginx-conf zabbix-sql-scripts zabbix-agent
 
-# Copiamos el script de configuración de MariaDB
+# Copiamos el script de configuración de MariaDB, Zabbix y el entrypoint
+COPY conf-zabbix.sh /usr/local/bin/conf-zabbix.sh
 COPY conf-mysql.sh /usr/local/bin/conf-mysql.sh
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
 # Le damos permisos de ejecución
 RUN chmod +x /usr/local/bin/conf-mysql.sh
+RUN chmod +x /usr/local/bin/conf-zabbix.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Lo ejecutamos dentro del contenedor
+# Ejecutamos los scripts de configuración de mysql y de zabbix
 RUN /usr/local/bin/conf-mysql.sh
+RUN /usr/local/bin/conf-zabbix.sh
+
+# Mandamos al entrypoint y al bucle
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
