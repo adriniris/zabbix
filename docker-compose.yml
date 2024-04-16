@@ -1,7 +1,7 @@
 version: '3.8'
 services:
  db:
-   image: mariadb
+   image: mariadb:lts
    restart: unless-stopped
    networks:
      - zabbix
@@ -16,15 +16,6 @@ services:
      - --default-authentication-plugin=mysql_native_password
    container_name: mysql_zabbix
 
- java_gateway:
-    image: zabbix/zabbix-java-gateway:alpine-6.4-latest
-    restart: unless-stopped
-    networks:
-      - zabbix
-    container_name: zabbix-java-gateway
-    depends_on:
-      - db
-
  server_with_mysql:
     image: zabbix/zabbix-server-mysql:alpine-6.4-latest
     restart: unless-stopped
@@ -34,7 +25,6 @@ services:
       MYSQL_USER: zabbix
       MYSQL_PASSWORD: muysecreto
       MYSQL_ROOT_PASSWORD: secreto
-      ZBX_JAVAGATEWAY: java_gateway
     networks:
       - zabbix
     ports:
@@ -42,7 +32,6 @@ services:
     container_name: zabbix-server
     depends_on:
       - db
-      - java_gateway
 
  web_interface:
     image: zabbix/zabbix-web-nginx-mysql:alpine-6.4-latest
@@ -60,7 +49,6 @@ services:
       - "8080:8080"
     depends_on:
       - db
-      - java_gateway
       - server_with_mysql
 
 networks:
