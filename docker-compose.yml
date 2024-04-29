@@ -5,11 +5,8 @@ services:
    restart: unless-stopped
    networks:
      - zabbix
-   environment:
-     MARIADB_ROOT_PASSWORD: secreto
-     MARIADB_DATABASE: zabbix
-     MARIADB_USER: zabbix
-     MARIADB_PASSWORD: muysecreto
+   env_file:
+      - envs/db.env
    command:
      - --character-set-server=utf8
      - --collation-server=utf8_bin
@@ -19,12 +16,8 @@ services:
  server_with_mysql:
     image: zabbix/zabbix-server-mysql:alpine-6.4-latest
     restart: unless-stopped
-    environment:
-      DB_SERVER_HOST: db
-      MYSQL_DATABASE: zabbix
-      MYSQL_USER: zabbix
-      MYSQL_PASSWORD: muysecreto
-      MYSQL_ROOT_PASSWORD: secreto
+    env_file:
+      - envs/server.env
     networks:
       - zabbix
     ports:
@@ -36,13 +29,8 @@ services:
  web_interface:
     image: zabbix/zabbix-web-nginx-mysql:alpine-6.4-latest
     restart: unless-stopped
-    environment:
-      ZBX_SERVER_HOST: server_with_mysql
-      DB_SERVER_HOST: db
-      MYSQL_DATABASE: zabbix
-      MYSQL_USER: zabbix
-      MYSQL_PASSWORD: muysecreto
-      MYSQL_ROOT_PASSWORD: secreto
+    env_file:
+      - envs/web.env
     networks:
       - zabbix
     ports:
